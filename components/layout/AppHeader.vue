@@ -5,28 +5,28 @@
         class="logo-wrapper"
         @click="toggleDrawer">
         <i
-          v-if="ready && widthBreak"
+          v-if="ready && tabletBreak"
           class="fal fa-ellipsis-v" />
         <app-logo class="header-logo" />
-        <h1 v-if="ready && widthBreak">{{ regionLabel }}</h1>
+        <h1 v-if="ready && tabletBreak">{{ regionLabel }}</h1>
       </div>
       <view-dropdown
-        v-if="!widthBreak"
+        v-if="!tabletBreak"
         class="selection" />
       <region-dropdown
-        v-if="!widthBreak"
+        v-if="!tabletBreak"
         class="selection" />
     </div>
 
     <div>
       <app-drawer
-        v-if="widthBreak"
+        v-if="tabletBreak"
         :open="openDrawer"
         @close="closeDrawer" />
 
       <div
         v-if="!isFacilitiesView && showButtons"
-        :class="{ hide: widthBreak }"
+        :class="{ hide: tabletBreak }"
         class="more-buttons"
       >
         <consumption-generation-toggle />
@@ -42,7 +42,7 @@
       </div>
 
       <div
-        v-if="!widthBreak && showButtons"
+        v-if="!tabletBreak && showButtons"
         class="share-button-wrapper">
         <button
           v-on-clickaway="handleClickAway"
@@ -117,13 +117,14 @@ export default {
       generating: false,
       openDrawer: false,
       showShareMenu: false,
-      windowWidth: 0,
       regions: getEnergyRegions()
     }
   },
 
   computed: {
     ...mapGetters({
+      tabletBreak: 'app/tabletBreak',
+
       chartEnergyRenewablesLine:
         'chartOptionsPowerEnergy/chartEnergyRenewablesLine',
       energyExportData: 'regionEnergy/filteredCurrentDataset',
@@ -133,9 +134,6 @@ export default {
       temperatureDomains: 'regionEnergy/domainTemperature',
       marketValueDomains: 'regionEnergy/currentDomainMarketValue'
     }),
-    responsiveBreakWidth() {
-      return this.$store.getters.responsiveBreakWidth
-    },
     range() {
       return this.$store.getters.range
     },
@@ -147,9 +145,6 @@ export default {
     },
     dateFilter() {
       return this.$store.getters.dateFilter
-    },
-    widthBreak() {
-      return this.windowWidth < this.responsiveBreakWidth
     },
     isFacilitiesView() {
       return this.$store.getters.currentView === 'facilities'
@@ -250,16 +245,6 @@ export default {
   },
 
   mounted() {
-    if (process.client) {
-      this.windowWidth = window.innerWidth
-      window.addEventListener(
-        'resize',
-        _debounce(() => {
-          this.windowWidth = window.innerWidth
-        }, 200)
-      )
-    }
-
     this.ready = true
   },
 

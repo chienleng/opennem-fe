@@ -141,10 +141,9 @@ export default {
         .domain(this.colourDomain)
         .range(this.colourRange)
 
-      const x = scaleLinear().range([
-        this.margin.left,
-        this.svgWidth - this.margin.right
-      ])
+      const xMin = this.zeroBlock ? this.margin.left : 0
+
+      const x = scaleLinear().range([xMin, this.svgWidth - this.margin.right])
 
       svg.select('.zero-rect').remove()
       svg.select('.ramp-group').remove()

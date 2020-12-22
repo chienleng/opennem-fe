@@ -59,7 +59,6 @@
       <section
         v-for="(d, i) in regionData"
         :key="`region-${i}`"
-        :style="{ 'margin-top': d.yearlyData ? '35px' : '35px'}"
         class="vis-section"
       >
 
@@ -139,7 +138,7 @@
 </template>
 
 <script>
-import { mapGetters, mapActions, mapMutations } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import { extent } from 'd3-array'
 import { select, mouse } from 'd3-selection'
 import { format as numFormat } from 'd3-format'
@@ -266,12 +265,10 @@ export default {
     this.getData(this.regionId, this.selectedPeriod)
 
     this.width = this.$el.offsetWidth - 32
-    this.setWindowWidth(window.innerWidth)
 
     window.addEventListener(
       'resize',
       debounce(() => {
-        this.setWindowWidth(window.innerWidth)
         this.width =
           this.$el.offsetWidth === 0 ? this.width : this.$el.offsetWidth - 32
       }),
@@ -304,10 +301,6 @@ export default {
       doGetRegionDataByRangeInterval:
         'regionEnergy/doGetRegionDataByRangeInterval',
       doGetYearRegionData: 'regionEnergy/doGetYearRegionData'
-    }),
-
-    ...mapMutations({
-      setWindowWidth: 'app/windowWidth'
     }),
 
     getData(id, period) {
@@ -688,6 +681,7 @@ h3 {
 }
 .vis-section {
   position: relative;
+  margin-top: 35px;
 
   h4 {
     font-family: $header-font-family;

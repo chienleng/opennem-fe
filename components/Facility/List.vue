@@ -1,9 +1,9 @@
 <template>
   <div class="card-wrapper">
     <div class="column-headers">
-      <div 
+      <div
         :style="{ width: hideRegionColumn ? '60%' : '50%'}"
-        class="name-col col-header" 
+        class="name-col col-header"
         @click="sort('displayName')"
       >
         Name
@@ -13,9 +13,9 @@
           class="fal" />
       </div>
 
-      <div 
+      <div
         v-show="!hideRegionColumn"
-        class="region-col col-header" 
+        class="region-col col-header"
       >
         <span @click="sort('regionId')">
           Region
@@ -26,8 +26,8 @@
         </span>
       </div>
 
-      <div 
-        class="tech-col col-header" 
+      <div
+        class="tech-col col-header"
       >
         <span @click="sort('fuelTechs')">
           {{ techHeaderName }}
@@ -38,8 +38,8 @@
         </span>
       </div>
 
-      <div 
-        class="cap-col col-header" 
+      <div
+        class="cap-col col-header"
         @click="sort('generatorCap')"
       >
         Gen. Capacity
@@ -49,7 +49,7 @@
           class="fal" />
       </div>
     </div>
-    
+
     <div
       v-for="(facility, index) in filteredFacilities"
       :id="facility.stationId"
@@ -70,7 +70,7 @@
         <span
           v-for="(ft, ftIndex) in facility.fuelTechs"
           :key="ftIndex"
-          :style="{ 
+          :style="{
             backgroundColor: getColour(ft),
             backgroundImage: getBgImage(facility.status),
             backgroundSize: '5px 5px',
@@ -78,7 +78,7 @@
           }"
           class="source-colour-side" />
       </div>
-      
+
       <div class="facility-detail">
         <div
           :style="{ width: hideRegionColumn ? '60%' : '50%'}"
@@ -86,8 +86,8 @@
           <h2 class="station-name">
             {{ facility.displayName }}
           </h2>
-          <span 
-            v-if="!facility.hasLocation" 
+          <span
+            v-if="!facility.hasLocation"
             class="has-location-icon fa-stack fa-1x">
             <i class="fal fa-map-marker-alt fa-stack-1x"/>
             <i class="fal fa-ban fa-stack-2x" />
@@ -135,19 +135,19 @@
           <div
             v-show="facility.generatorCap"
             class="stat-value has-text-right">
-            <span 
+            <span
               v-tooltip.auto="{
                 content: getFacilityInfoTooltip(facility),
-                trigger: widthBreak ? 'click' : 'hover'
+                trigger: tabletBreak ? 'click' : 'hover'
               }"
               v-if="hasHiddenCapacity(facility)"
               class="has-hidden-capacity"><i class="fal fa-info-circle"/></span>
             {{ getGeneratorCap(facility) | facilityFormatNumber }}
-            <span 
-              v-if="getGeneratorCap(facility) !== 0 && getGeneratorCap(facility) < 1" 
+            <span
+              v-if="getGeneratorCap(facility) !== 0 && getGeneratorCap(facility) < 1"
               class="unit">kW</span>
-            <span 
-              v-if="getGeneratorCap(facility) !== 0 && getGeneratorCap(facility) >= 1" 
+            <span
+              v-if="getGeneratorCap(facility) !== 0 && getGeneratorCap(facility) >= 1"
               class="unit">MW</span>
           </div>
           <div
@@ -170,6 +170,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import _debounce from 'lodash.debounce'
 import _includes from 'lodash.includes'
 import _uniqBy from 'lodash.uniqby'
@@ -246,21 +247,21 @@ export default {
       selected: null,
       divWidth: 0,
       divHeight: 0,
-      windowWidth: 0,
       windowHeight: 0,
       waitForDblClickCB: false
     }
   },
 
   computed: {
+    ...mapGetters({
+      windowWidth: 'app/windowWidth',
+      tabletBreak: 'app/tabletBreak'
+    }),
     queryFacilityId() {
       return this.$route.query.selected
     },
-    widthBreak() {
-      return this.windowWidth < 769
-    },
     techHeaderName() {
-      return this.widthBreak ? 'Tech' : 'Technology'
+      return this.tabletBreak ? 'Tech' : 'Technology'
     },
     totalsPosition() {
       return this.divHeight > this.windowHeight ? 'fixed' : 'static'
@@ -320,14 +321,12 @@ export default {
 
   mounted() {
     if (process.client) {
-      this.windowWidth = window.innerWidth
       this.windowHeight = window.innerHeight
       this.divWidth = this.calculateDivWidth()
 
       window.addEventListener(
         'resize',
         _debounce(() => {
-          this.windowWidth = window.innerWidth
           this.windowHeight = window.innerHeight
           this.divWidth = this.calculateDivWidth()
         }, 200)
@@ -378,7 +377,7 @@ export default {
 
   methods: {
     calculateDivWidth() {
-      if (this.widthBreak) {
+      if (this.tabletBreak) {
         return this.windowWidth
       }
       return this.$el.offsetWidth - 13
@@ -392,7 +391,7 @@ export default {
     handleRowClick: _debounce(function(facility) {
       console.log(`${facility.displayName} view model`, facility)
       console.log(`${facility.displayName} json obj`, facility.jsonData)
-      if (!this.widthBreak) {
+      if (!this.tabletBreak) {
         if (this.selected === facility && !this.waitForDblClickCB) {
           this.selected = null
           this.$emit('facilitySelect', null, true)

@@ -233,7 +233,7 @@ export default {
             .style('pointer-events', 'none')
             .style('opacity', 1)
         })
-        .on('mouseleave', function() {
+        .on('mouseleave touchend', function() {
           self.$tooltip.style('opacity', 0)
           self.$emit('rect-mouseout')
         })

@@ -34,7 +34,7 @@
       v-if="ready"
       class="facility-list-map-container">
       <facility-list
-        v-if="!widthBreak || (widthBreak && selectedView === 'list')"
+        v-if="!tabletBreak || (tabletBreak && selectedView === 'list')"
         :filtered-facilities="filteredFacilities"
         :selected-facility="selectedFacility"
         :selected-techs="selectedTechs"
@@ -51,7 +51,7 @@
       />
 
       <facility-map
-        v-if="!widthBreak || (widthBreak && selectedView === 'map')"
+        v-if="!tabletBreak || (tabletBreak && selectedView === 'map')"
         :data="filteredFacilities"
         :selected-facility="selectedFacility"
         :hovered-facility="hoveredFacility"
@@ -62,7 +62,7 @@
 
       <transition name="slide-up-fade">
         <facility-card
-          v-if="selectedFacility && widthBreak"
+          v-if="selectedFacility && tabletBreak"
           :selected-techs="selectedTechs"
           :facility="selectedFacility"
           @close="handleCloseDetail"
@@ -161,14 +161,17 @@ export default {
       orderBy: ASCENDING,
       totalFacilities: 0,
       shouldZoomWhenSelected: false,
-      windowWidth: 0,
       baseUrl: `${this.$config.url}/images/screens/`,
-      useDev: this.$config.useDev,
-      hostEnv: 'dev'
+      useDev: this.$config.useDev
     }
   },
 
   computed: {
+    ...mapGetters({
+      hostEnv: 'hostEnv',
+      windowWidth: 'app/windowWidth',
+      tabletBreak: 'app/tabletBreak'
+    }),
     filteredFacilities: {
       get() {
         return this.$store.getters['facility/filteredFacilities']
@@ -189,9 +192,7 @@ export default {
     isAllRegion() {
       return this.$route.params.region === 'au'
     },
-    widthBreak() {
-      return this.windowWidth < 769
-    },
+
     facilitySortBy() {
       return this.$store.getters['facility/sortBy']
     },
@@ -236,26 +237,6 @@ export default {
   },
 
   mounted() {
-    if (process.client) {
-      this.windowWidth = window.innerWidth
-      this.$nextTick(() => {
-        window.addEventListener(
-          'resize',
-          _debounce(() => {
-            this.windowWidth = window.innerWidth
-          }, 200)
-        )
-      })
-
-      const host = window.location.host
-      if (host === 'opennem.org.au') {
-        this.hostEnv = 'prod'
-      }
-      if (host === 'dev.opennem.org.au') {
-        this.hostEnv = 'dev'
-      }
-    }
-
     this.$store.dispatch('currentView', 'facilities')
     this.sortBy = this.facilitySortBy
     this.orderBy = this.facilityOrderBy

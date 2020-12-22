@@ -3,7 +3,7 @@
     <div class="filter-bar">
       <div class="field filter-station">
         <button
-          v-if="widthBreak && !searchOn"
+          v-if="tabletBreak && !searchOn"
           class="search-button button is-rounded is-small is-dark is-inverted"
           @click="toggleSearch"
         >
@@ -11,9 +11,9 @@
         </button>
 
         <p
-          v-if="!widthBreak || (widthBreak && searchOn)"
+          v-if="!tabletBreak || (tabletBreak && searchOn)"
           class="control has-icons-left has-icons-right">
-          <input 
+          <input
             v-model="filterFacilityName"
             class="input is-small is-rounded filter-station-input"
             type="text"
@@ -29,16 +29,16 @@
           </span>
 
           <button
-            v-if="(filterFacilityName && !widthBreak) || (widthBreak && searchOn)"
+            v-if="(filterFacilityName && !tabletBreak) || (tabletBreak && searchOn)"
             class="close-button button is-rounded is-small is-dark is-inverted"
-            @click="widthBreak ? toggleSearch() : clearFilter()"
+            @click="tabletBreak ? toggleSearch() : clearFilter()"
           >
             <i class="fal fa-times" />
           </button>
         </p>
       </div>
 
-      <div 
+      <div
         v-on-clickaway="onClickAway"
         v-if="!searchOn"
         :class="{'is-active': techDropdownActive}"
@@ -76,7 +76,7 @@
                   </span>
                   <span @click="handleTechGroupClick(d)">
                     <span
-                      :style="{ 
+                      :style="{
                         backgroundColor: isGroupSelected(d.id) ? d.colour : '#fff',
                         'border-color': d.colour
                       }"
@@ -91,7 +91,7 @@
                     {{ d.label }}
                   </span>
                 </div>
-                
+
                 <div
                   v-show="d.fields.length > 1 && isGroupExpanded(d.id)"
                   class="subitem-group">
@@ -100,7 +100,7 @@
                     :key="fIndex">
                     <span @click="handleTechClick(d, field)">
                       <span
-                        :style="{ 
+                        :style="{
                           backgroundColor: isTechSelected(field) ? getTechColour(field) : '#fff',
                           'border-color': getTechColour(field)
                         }"
@@ -109,7 +109,7 @@
                       </span>
                       {{ getTechLabel(field) }}
                     </span>
-                  </div> 
+                  </div>
                 </div>
               </div>
 
@@ -125,7 +125,7 @@
               </div>
             </div>
           </div>
-        </transition> 
+        </transition>
       </div>
 
       <status-filter
@@ -136,7 +136,7 @@
       />
 
       <facility-view-toggle
-        v-if="widthBreak"
+        v-if="tabletBreak"
         :view="selectedView"
         class="facility-view-toggle"
         @viewSelect="handleViewSelect"
@@ -191,18 +191,15 @@ export default {
       allTechs: [],
       groupExpanded: [],
       simplifiedGroup: _cloneDeep(FacilityGroups),
-      windowWidth: 0,
       searchOn: false
     }
   },
 
   computed: {
     ...mapGetters({
+      tabletBreak: 'app/tabletBreak',
       facilitySelectedTechGroups: 'facility/selectedTechGroups'
     }),
-    widthBreak() {
-      return this.windowWidth < 769
-    },
     selectedTechGroups: {
       get() {
         return this.facilitySelectedTechGroups
@@ -215,18 +212,6 @@ export default {
 
   mounted() {
     EventBus.$on('facilities.filter.clear', this.clearFilter)
-
-    if (process.client) {
-      this.windowWidth = window.innerWidth
-      this.$nextTick(() => {
-        window.addEventListener(
-          'resize',
-          _debounce(() => {
-            this.windowWidth = window.innerWidth
-          }, 200)
-        )
-      })
-    }
 
     // Filter Group
     const groups = this.simplifiedGroup.filter(

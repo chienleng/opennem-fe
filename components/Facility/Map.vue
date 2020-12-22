@@ -26,7 +26,7 @@
     </div> -->
 
     <totals
-      v-if="widthBreak"
+      v-if="tabletBreak"
       :position="'fixed'"
       :div-width="divWidth"
       :total-facilities="totalFacilities"
@@ -36,6 +36,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import _debounce from 'lodash.debounce'
 import _includes from 'lodash.includes'
 import _isEmpty from 'lodash.isempty'
@@ -110,7 +111,6 @@ export default {
       hoveredMarker: null,
       facilitiesFeature: null,
       emissionsFeature: null,
-      windowWidth: 500,
       windowHeight: 800,
       divWidth: 0,
       mapCentre: [-29.186936, 143.633537]
@@ -118,12 +118,12 @@ export default {
   },
 
   computed: {
-    widthBreak() {
-      return this.windowWidth < 769
-    },
+    ...mapGetters({
+      tabletBreak: 'app/tabletBreak'
+    }),
 
     mapHeight() {
-      const offset = this.widthBreak ? 49 : 50
+      const offset = this.tabletBreak ? 49 : 50
       return `${this.windowHeight - offset}px`
     },
 
@@ -273,7 +273,6 @@ export default {
 
     if (process.client) {
       this.divWidth = this.$el.offsetWidth
-      this.windowWidth = window.innerWidth
       this.windowHeight = window.innerHeight
       window.addEventListener(
         'resize',

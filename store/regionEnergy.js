@@ -1,7 +1,6 @@
 import _cloneDeep from 'lodash.clonedeep'
 import PerfTime from '@/plugins/perfTime.js'
 import { lsGet, lsSet } from '@/services/LocalStorage'
-import hostEnv from '@/services/HostEnv.js'
 import http from '@/services/Http.js'
 import Data from '@/services/Data.js'
 import {
@@ -326,7 +325,6 @@ export const actions = {
     dispatch('app/doClearError', null, { root: true })
 
     if (isValidRegion(region) && range !== '' && interval !== '') {
-      const env = hostEnv()
       const useV3Paths = rootGetters['feature/v3Paths']
       const urls = Data.getEnergyUrls(region, range, useV3Paths)
       currentRegion = region
