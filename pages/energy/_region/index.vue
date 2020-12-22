@@ -184,7 +184,11 @@ export default {
       })
     },
     fuelTechGroupName(groupName) {
-      this.doUpdateDatasetByGroup({ groupName })
+      if (groupName === 'regions') {
+        console.log(groupName)
+      } else {
+        this.doUpdateDatasetByGroup({ groupName })
+      }
     },
     currentDataset(dataset) {
       if (dataset.length > 0) {

@@ -1,18 +1,22 @@
 <template>
   <div class="select is-rounded">
     <select v-model="selected">
+
+      <optgroup label="Fuel Technology Grouping">
+        <option
+          v-for="(g, index) in groups"
+          :key="index"
+          :value="g">
+          {{ g }}
+        </option>
+      </optgroup>
+
       <option
-        v-for="(g, index) in groups"
-        :key="index"
-        :value="g">
-        {{ g }}
-      </option>
-      <option 
-        v-if="showRegionCompareOption" 
+        v-if="showRegionCompareOption"
         disabled>——————————</option>
-      <option 
-        v-if="showRegionCompareOption" 
-        value="regions">Regions</option>
+      <option
+        v-if="showRegionCompareOption"
+        value="regions">Compare Regions</option>
     </select>
   </div>
 </template>
@@ -45,25 +49,30 @@ export default {
     regionId() {
       return this.$route.params.region
     },
+    isRegionAuOrNem() {
+      return this.regionId === 'nem' || this.regionId === 'au'
+    },
     isRegionCompareRoute() {
       return this.$route.name === 'energy-region-view-regions'
     },
     showRegionCompareOption() {
-      return this.regionId === 'nem' && this.featureRegionCompare
+      return this.isRegionAuOrNem && this.featureRegionCompare
     }
   },
 
   watch: {
     selected(newValue, oldValue) {
-      if (this.regionId === 'nem' && newValue === 'regions') {
-        this.$store.dispatch('fuelTechGroupName', newValue)
-        this.$router.push({ path: '/energy/nem/view/regions' })
-      } else {
-        this.triggerGroupChange()
-        if (oldValue === 'regions') {
-          this.$router.push({ path: `/energy/${this.regionId}` })
-        }
-      }
+      // if (this.isRegionAuOrNem) {
+      //   this.$store.dispatch('fuelTechGroupName', newValue)
+      //   this.$router.push({ path: '/energy/nem/view/regions' })
+      // } else {
+      //   this.triggerGroupChange()
+      //   if (oldValue === 'regions') {
+      //     this.$router.push({ path: `/energy/${this.regionId}` })
+      //   }
+      // }
+
+      this.triggerGroupChange()
     },
     fuelTechGroupName(group) {
       this.selected = group
