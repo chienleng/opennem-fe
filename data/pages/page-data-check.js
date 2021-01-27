@@ -1,4 +1,4 @@
-export function getTableData({
+export function getStripesTableData({
   dataset,
   selectedMetricObject,
   dateFormatString
@@ -29,6 +29,43 @@ export function getTableData({
   dataset.forEach(regionData => {
     rows.forEach((d, i) => {
       d[regionData.regionId] = regionData.data[i][selectedMetric]
+    })
+  })
+
+  return {
+    rows,
+    columns
+  }
+}
+
+export function getEnergyTableData({ datasets }) {
+  const regions = datasets.map(d => d.region)
+
+  const columns = [
+    {
+      label: 'Date',
+      field: 'date',
+      type: 'date',
+      formatString: 'Pp'
+    },
+    ...regions.map(d => {
+      return {
+        label: d,
+        field: d
+      }
+    })
+  ]
+
+  const rows = datasets[0].dataset.map(d => {
+    return {
+      date: d.date,
+      time: d.time
+    }
+  })
+
+  datasets.forEach(regionData => {
+    rows.forEach((d, i) => {
+      d[regionData.region] = regionData.dataset[i]._total
     })
   })
 

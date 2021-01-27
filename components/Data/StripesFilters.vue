@@ -20,7 +20,7 @@ import { mapActions } from 'vuex'
 import { metrics } from '@/constants/stripes/index.js'
 import { getEachYearOfInterval } from '@/constants/stripes/dates.js'
 import {
-  getTableData,
+  getStripesTableData,
   getOptionId,
   getOptionLabel
 } from '@/data/pages/page-data-check.js'
@@ -143,7 +143,7 @@ export default {
 
     getCombinedRegionsData(dataset, selectedMetric) {
       if (dataset && dataset.length > 0) {
-        const { columns, rows } = getTableData({
+        const { columns, rows } = getStripesTableData({
           dataset,
           dateFormatString: this.isGroupedRegion ? 'MMM yyyy' : 'dd/MM/yyyy',
           selectedMetricObject: this.metricOptions.find(

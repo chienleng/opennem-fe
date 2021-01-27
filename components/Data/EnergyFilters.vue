@@ -17,7 +17,7 @@
 import { mapActions } from 'vuex'
 
 import {
-  getTableData,
+  getEnergyTableData,
   getOptionId,
   getOptionLabel
 } from '@/data/pages/page-data-check.js'
@@ -33,6 +33,10 @@ export default {
     region: {
       type: String,
       default: null
+    },
+    regionObj: {
+      type: Object,
+      default: () => null
     },
     isGroupedRegion: {
       type: Boolean,
@@ -52,11 +56,13 @@ export default {
       intervalOptions: [
         {
           label: 'Day',
-          value: 'day'
+          value: 'Day'
         }
       ],
       selectedRange: null,
-      selectedInterval: null
+      selectedInterval: null,
+      selectedPeriod: 'All',
+      selectedGroup: 'Default'
     }
   },
 
@@ -66,10 +72,14 @@ export default {
     }
   },
 
+  created() {
+    this.selectedRange = this.rangeOptions[0].value
+    this.selectedInterval = this.intervalOptions[0].value
+  },
+
   methods: {
     ...mapActions({
-      // doGetRegionData: 'regionEnergy/doGetRegionData',
-      // doGetAllData: 'regionEnergy/doGetAllData'
+      doGetRegionsData: 'regionEnergy/doGetRegionsData'
     }),
 
     handleChange() {},
@@ -85,27 +95,23 @@ export default {
       this.$emit('title', '')
     },
 
-    fetch() {
-      console.log('fetch')
-    },
+    async fetch() {
+      const datasets = await this.doGetRegionsData({
+        regions: this.regionObj.regions,
+        range: this.selectedRange,
+        interval: this.selectedInterval,
+        period: this.selectedPeriod,
+        groupName: this.selectedGroup
+      })
 
-    //     getCombinedRegionsData(dataset, selectedMetric) {
-    //       if (dataset && dataset.length > 0) {
-    //         const { columns, rows } = getTableData({
-    //           dataset,
-    //           dateFormatString: this.isGroupedRegion ? 'MMM yyyy' : 'dd/MM/yyyy',
-    //           selectedMetricObject: this.metricOptions.find(
-    //             d => d.value === selectedMetric
-    //           )
-    //         })
-    //
-    //         this.$emit('dataset', {
-    //           dataset,
-    //           columns,
-    //           rows
-    //         })
-    //       }
-    //     },
+      const { columns, rows } = getEnergyTableData({ datasets })
+
+      this.$emit('dataset', {
+        dataset: datasets,
+        columns,
+        rows
+      })
+    },
 
     setTitle(metric, year) {
       const metricLabel = getOptionLabel(this.metricOptions, metric)

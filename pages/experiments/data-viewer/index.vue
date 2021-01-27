@@ -19,6 +19,7 @@
         ref="energyFilters"
         :is-grouped-region="isGroupedRegion"
         :region="selectedRegion"
+        :region-obj="selectedRegionObj"
         @title="handleTitleChange"
         @dataset="handleDataChange"
       />
@@ -122,8 +123,15 @@ export default {
   },
 
   computed: {
+    selectedRegionObj() {
+      return this.regionOptions.find(r => r.id === this.selectedRegion)
+    },
     isGroupedRegion() {
-      return this.selectedRegion === 'au' || this.selectedRegion === 'nem'
+      return (
+        this.selectedRegionObj &&
+        this.selectedRegionObj.regions &&
+        this.selectedRegionObj.regions.length > 0
+      )
     },
     selectedRegionLabel() {
       return getOptionLabel(this.regionOptions, this.selectedRegion)
