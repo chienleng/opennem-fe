@@ -221,6 +221,10 @@ export function isWind(fuelTech) {
   return fuelTech === WIND
 }
 
+export function isHydro(fuelTech) {
+  return fuelTech === HYDRO
+}
+
 export function isSolar(fuelTech) {
   return (
     fuelTech === SOLAR_UTILITY ||

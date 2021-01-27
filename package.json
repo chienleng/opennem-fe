@@ -1,6 +1,6 @@
 {
   "name": "opennem",
-  "version": "3.5.44",
+  "version": "3.5.48",
   "description": "An Open Platform for National Electricity Market Data",
   "author": "Steven Tan",
   "private": true,
@@ -49,7 +49,6 @@
     "lodash.uniq": "^4.5.0",
     "lodash.uniqby": "^4.7.0",
     "mapbox-gl": "^1.12.0",
-    "moment": "^2.23.0",
     "nuxt": "^2.13.0",
     "v-tooltip": "^2.0.2",
     "vue-clickaway": "^2.2.2",

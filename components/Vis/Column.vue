@@ -5,19 +5,19 @@
       :height="svgHeight"
       :id="id"
       class="column-chart">
-      <g 
+      <g
         :transform="gTransform"
         class="axis-line-group">
         <g
-          :transform="xAxisTransform" 
+          :transform="xAxisTransform"
           :class="xAxisClass" />
 
         <g :class="yAxisClass" />
       </g>
-      <g 
+      <g
         :transform="columnTransform"
         class="column-group" />
-      <g 
+      <g
         :transform="columnTransform"
         class="column-label-group" />
     </svg>
@@ -61,6 +61,10 @@ export default {
     convertValue: {
       type: Function,
       default: () => function() {}
+    },
+    highlightDomain: {
+      type: String,
+      default: null
     }
   },
 
@@ -126,6 +130,15 @@ export default {
     },
     displayPrefix() {
       this.update()
+    },
+    highlightDomain(domain) {
+      if (domain && domain !== '') {
+        this.$columnGroup
+          .selectAll('rect')
+          .attr('opacity', d => (d.name === domain ? 1 : 0.2))
+      } else {
+        this.$columnGroup.selectAll('rect').attr('opacity', 1)
+      }
     }
   },
 

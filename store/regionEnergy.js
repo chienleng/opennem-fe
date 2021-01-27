@@ -8,7 +8,7 @@ import {
   dataProcess,
   dataRollUp,
   dataFilterByPeriod
-} from '@/modules/dataTransform/energy'
+} from '@/data/parse/region-energy'
 import { isValidRegion } from '@/constants/energy-regions.js'
 
 let currentRegion = ''
@@ -176,6 +176,83 @@ export const mutations = {
 }
 
 export const actions = {
+  doGetAllData({ commit, dispatch, rootGetters }, { regions }) {
+    dispatch('app/doClearError', null, { root: true })
+
+    const url = Data.getAllMonthlyPath()
+
+    commit('ready', false)
+    commit('isFetching', true)
+
+    function processResponses(responses) {
+      const dataCount = getDataCount(responses)
+      const perf = new PerfTime()
+      perf.time()
+      console.info(`------ ${currentRegion} (start)`)
+
+      const {
+        dataset,
+        domainPowerEnergy,
+        domainEmissions,
+        domainTemperature,
+        domainPrice,
+        domainMarketValue,
+        inflation
+      } = simpleDataProcess(responses)
+
+      perf.timeEnd(
+        `------ ${currentRegion} — (${dataCount} down to ${dataset.length})`
+      )
+
+      return {
+        dataset,
+        domainPowerEnergy,
+        domainEmissions,
+        domainTemperature,
+        domainPrice,
+        domainMarketValue,
+        inflation
+      }
+    }
+
+    return http([url])
+      .then(res => {
+        const check = res.length > 0 ? (res[0].data ? true : false) : false
+        const responses = check ? res[0].data : []
+        const all = {}
+
+        regions.forEach((r, i) => {
+          const cpiData = responses.find(d => d.type === 'cpi')
+          const filtered = responses.filter(
+            d => d.region === r.id.toUpperCase()
+          )
+          if (cpiData) {
+            filtered.push(cpiData)
+          }
+          currentRegion = r.id
+          all[r.id] = processResponses([filtered])
+        })
+
+        return all
+      })
+      .catch(e => {
+        console.error('error', e)
+        let header = 'Error'
+        let message = ''
+
+        if (!e) {
+          message =
+            'There is an issue processing the responses. Please check the developer console and contact OpenNEM.'
+        } else {
+          const error = e.toJSON()
+          header = `${error.message}`
+          message = `Trying to fetch <code>${error.config.url}</code>`
+
+          console.log(error)
+        }
+      })
+  },
+
   doGetRegionData({ commit, dispatch, rootGetters }, { region }) {
     dispatch('app/doClearError', null, { root: true })
 
@@ -198,7 +275,10 @@ export const actions = {
           dataset,
           domainPowerEnergy,
           domainEmissions,
-          domainTemperature
+          domainTemperature,
+          domainPrice,
+          domainMarketValue,
+          inflation
         } = simpleDataProcess(responses)
 
         perf.timeEnd(
@@ -209,7 +289,10 @@ export const actions = {
           dataset,
           domainPowerEnergy,
           domainEmissions,
-          domainTemperature
+          domainTemperature,
+          domainPrice,
+          domainMarketValue,
+          inflation
         }
       }
 
@@ -239,81 +322,6 @@ export const actions = {
 
             console.log(error)
           }
-        })
-    }
-  },
-
-  doGetYearRegionData({ commit, dispatch, rootGetters }, { region, year }) {
-    dispatch('app/doClearError', null, { root: true })
-
-    if (isValidRegion(region) && year !== '') {
-      const useV3Paths = rootGetters['feature/v3Paths']
-      const url = Data.getYearDailyPath(region, year, useV3Paths)
-
-      currentRegion = region
-
-      commit('ready', false)
-      commit('isFetching', true)
-
-      function processResponses(responses) {
-        const dataCount = getDataCount(responses)
-        const perf = new PerfTime()
-        perf.time()
-        console.info(`------ ${currentRegion} (start)`)
-
-        const {
-          dataset,
-          domainPowerEnergy,
-          domainEmissions,
-          domainTemperature
-        } = simpleDataProcess(responses)
-
-        perf.timeEnd(
-          `------ ${currentRegion} — (${dataCount} down to ${dataset.length})`
-        )
-
-        return {
-          dataset,
-          domainPowerEnergy,
-          domainEmissions,
-          domainTemperature
-        }
-      }
-
-      return http([url])
-        .then(res => {
-          const check = res.length > 0 ? (res[0].data ? true : false) : false
-          let responses = check
-            ? res.map(d => {
-                return d.data
-              })
-            : res
-
-          return processResponses(responses)
-        })
-        .catch(e => {
-          console.error('error', e)
-          let header = 'Error'
-          let message = ''
-
-          if (!e) {
-            message =
-              'There is an issue processing the responses. Please check the developer console and contact OpenNEM.'
-          } else {
-            const error = e.toJSON()
-            header = `${error.message}`
-            message = `Trying to fetch <code>${error.config.url}</code>`
-
-            console.log(error)
-          }
-          // dispatch(
-          //   'app/doUpdateError',
-          //   {
-          //     header,
-          //     message
-          //   },
-          //   { root: true }
-          // )
         })
     }
   },
@@ -380,6 +388,8 @@ export const actions = {
         commit('currentDomainEmissions', domainEmissionsGrouped[groupName])
         commit('currentDomainMarketValue', domainMarketValueGrouped[groupName])
 
+        console.log(currentDataset)
+
         // parse units
         let prefix = ''
         const isWattsPerHour =
@@ -404,7 +414,8 @@ export const actions = {
           currentDataset,
           currentDomainPowerEnergy: domainPowerEnergyGrouped[groupName],
           currentDomainEmissions: domainEmissionsGrouped[groupName],
-          domainTemperature: domainTemperature
+          domainTemperature,
+          domainPrice
         }
       }
 

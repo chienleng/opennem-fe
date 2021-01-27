@@ -47,7 +47,7 @@
           <column-selector />
         </div>
       </div>
-      
+
       <div class="summary-row">
         <div class="summary-col-label">Sources</div>
 
@@ -122,12 +122,12 @@
       @mouse-leave="handleMouseLeave"
     />
 
-    <div 
-      v-if="loadsOrder.length > 0" 
+    <div
+      v-if="loadsOrder.length > 0"
       class="summary-column-headers">
       <div class="summary-row">
         <div class="summary-col-label">Loads</div>
-   
+
         <div
           v-if="isEnergy"
           class="summary-col-energy cell-value">
@@ -173,8 +173,8 @@
       @mouse-leave="handleMouseLeave"
     />
 
-    <div 
-      v-if="loadsOrder.length > 0" 
+    <div
+      v-if="loadsOrder.length > 0"
       class="summary-column-headers" >
       <div class="summary-row last-row">
         <div class="summary-col-label">Net</div>

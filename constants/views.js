@@ -8,7 +8,7 @@ export default [
     label: 'Facilities'
   },
   {
-    id: 'experiments/metrics',
-    label: 'Metrics'
+    id: 'stripes',
+    label: 'Stripes'
   }
 ]

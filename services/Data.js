@@ -1,9 +1,12 @@
+import subDays from 'date-fns/subDays'
+
 export default {
   getEnergyUrls(region, range, useV3Paths) {
     const prepend =
       region === 'wem' || region === 'nem' || region === 'au' ? '' : '/NEM'
     const regionId = region.toUpperCase()
     const thisFullYear = new Date().getFullYear()
+    let lastFullYear = null
     const urls = []
 
     switch (range) {
@@ -17,6 +20,19 @@ export default {
         }
         break
       case '30D':
+        const thirtyDaysAgo = subDays(new Date(), 30)
+        lastFullYear = thirtyDaysAgo.getFullYear()
+
+        if (thisFullYear !== lastFullYear) {
+          if (useV3Paths || region === 'wem') {
+            urls.push(
+              `v3/stats/au${prepend}/${regionId}/energy/${lastFullYear}.json`
+            )
+          } else {
+            urls.push(`${region}/energy/daily/${lastFullYear}.json`)
+          }
+        }
+
         if (useV3Paths || region === 'wem') {
           urls.push(
             `v3/stats/au${prepend}/${regionId}/energy/${thisFullYear}.json`
@@ -28,7 +44,7 @@ export default {
       case '1Y':
         const now = new Date().getTime()
         const aYearAgo = now - 31557600000
-        const lastFullYear = new Date(aYearAgo).getFullYear()
+        lastFullYear = new Date(aYearAgo).getFullYear()
 
         if (thisFullYear !== lastFullYear) {
           if (useV3Paths || region === 'wem') {
@@ -77,5 +93,9 @@ export default {
     //   region === 'wem' || region === 'nem' || region === 'au' ? '' : '/NEM'
     const regionId = region.toUpperCase()
     return `v3/stats/au/${regionId}/daily.json`
+  },
+
+  getAllMonthlyPath() {
+    return 'v3/stats/au/all/monthly.json'
   }
 }

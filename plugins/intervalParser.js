@@ -3,6 +3,7 @@ import _includes from 'lodash.includes'
 /**
  * Parse interval:
  * - years = y
+ * - quarters = Q
  * - months = M
  * - weeks = w
  * - days = d
@@ -10,7 +11,7 @@ import _includes from 'lodash.includes'
  * - minutes = m
  * - seconds = s
  */
-const durationKeys = ['s', 'm', 'h', 'd', 'w', 'M', 'y']
+const durationKeys = ['s', 'm', 'h', 'd', 'w', 'M', 'Q', 'y']
 
 /**
  * returns {key, value}

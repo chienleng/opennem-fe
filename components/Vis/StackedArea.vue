@@ -47,24 +47,24 @@
           <feDropShadow
             dx="0"
             dy="0"
-            stdDeviation="0.5" 
+            stdDeviation="0.5"
             flood-color="rgba(0, 0, 0, 0.5)" />
         </filter>
 
-        <marker 
+        <marker
           :id="`${id}-arrowhead`"
-          markerWidth="8" 
-          markerHeight="8" 
-          refX="7" 
-          refY="4" 
+          markerWidth="8"
+          markerHeight="8"
+          refX="7"
+          refY="4"
           orient="auto">
-          <polygon 
-            points="0 0, 8 4, 0 8" 
+          <polygon
+            points="0 0, 8 4, 0 8"
             fill="darkred" />
         </marker>
       </defs>
 
-      <g 
+      <g
         :transform="gTransform"
         :class="{ 'hide-x-axis-labels': !showXAxis }"
         class="axis-line-group">
@@ -72,19 +72,19 @@
 
         <!-- x and y axis ticks/lines/text -->
         <g
-          :transform="xAxisTransform" 
+          :transform="xAxisTransform"
           :class="xAxisClass" />
-        
+
         <g :class="yAxisClass" />
 
         <!-- x axis layer to allow zoom in (brush) -->
-        <g 
+        <g
           v-if="showXAxis && brush && !readOnly"
-          :transform="xAxisBrushTransform" 
+          :transform="xAxisBrushTransform"
           class="x-axis-brush-group" />
       </g>
 
-      <g 
+      <g
         :transform="gTransform">
         <!-- hover layer to read interaction movements -->
         <g :class="hoverLayerClass">
@@ -98,8 +98,8 @@
         <g class="stacked-area-group" />
 
         <!-- where the line path will show -->
-        <g 
-          v-show="hasSecondDataset" 
+        <g
+          v-show="hasSecondDataset"
           class="line-group" />
 
         <g class="x-incomplete-group" />
@@ -108,12 +108,12 @@
       </g>
 
       <!-- yAxis tick text here to show above the area -->
-      <g 
+      <g
         :transform="gTransform"
         class="axis-text-group">
         <g :class="yAxisTickClass" />
-        <g 
-          v-show="hasSecondDataset" 
+        <g
+          v-show="hasSecondDataset"
           class="y-axis-2" />
         <g class="y-guides-group" />
       </g>
@@ -124,7 +124,7 @@
         :transform="gTransform"
         class="cursor-group">
         <g :class="cursorLineGroupClass" />
-      </g>    
+      </g>
     </svg>
   </div>
 </template>

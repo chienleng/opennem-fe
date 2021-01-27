@@ -1,9 +1,9 @@
 <template>
   <chart-header>
-    <template 
-      v-slot:options 
+    <template
+      v-slot:options
       v-if="!readOnly">
-      <chart-options 
+      <chart-options
         :options="options"
         :chart-type="chartType"
         :chart-curve="chartCurve"
@@ -22,13 +22,13 @@
 
     <template v-slot:label-unit>
       <strong>{{ displayTitle }}</strong>
-      <small 
+      <small
         :class="{ 'display-unit': allowDisplayHover }"
         @click.stop="handleUnitClick">{{ displayUnit }}</small>
     </template>
 
     <template
-      v-slot:average-value 
+      v-slot:average-value
       v-if="showAverageValue">
       Av.
       <strong>

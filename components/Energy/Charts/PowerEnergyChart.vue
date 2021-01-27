@@ -23,7 +23,7 @@
       :is-renewable-line-only="isRenewableLineOnly"
       :average-energy="averageEnergy"
       :hover-display-date="hoverDisplayDate"
-      :hover-value="domains.length > 1 ? hoverValue : null"
+      :hover-value="domains.length > 1 || (isTypeProportion || (isTypeLine && isYAxisPercentage)) ? hoverValue : null"
       :hover-domain-colour="hoverDomainColour"
       :hover-domain-label="hoverDomainLabel"
       :hover-renewables="hoverRenewables"
@@ -62,6 +62,7 @@
       :should-convert-value="shouldConvertValue"
       :convert-value="convertValue"
       :unit="` ${chartDisplayPrefix}${chartUnit}`"
+      :null-check-prop="'_total'"
       class="vis-chart"
       @dateOver="handleDateHover"
       @domainOver="handleDomainHover"
@@ -142,7 +143,7 @@ import AxisTimeFormats from '@/services/axisTimeFormats.js'
 import * as OPTIONS from '@/constants/chart-options.js'
 import * as SI from '@/constants/si.js'
 import { LOAD } from '@/constants/energy-fuel-techs/group-default.js'
-import EnergyToAveragePower from '@/modules/dataTransform/energy-to-average-power.js'
+import EnergyToAveragePower from '@/data/transform/energy-to-average-power.js'
 import DateDisplay from '@/services/DateDisplay.js'
 import MultiLine from '@/components/Vis/MultiLine'
 import DateBrush from '@/components/Vis/DateBrush'
@@ -226,7 +227,10 @@ export default {
     },
 
     tickFormat() {
-      return AxisTimeFormats[this.visTickFormat]
+      if (typeof this.visTickFormat === 'string') {
+        return AxisTimeFormats[this.visTickFormat]
+      }
+      return this.visTickFormat
     },
     secondTickFormat() {
       return AxisTimeFormats[this.visSecondTickFormat]
@@ -494,7 +498,7 @@ export default {
     averagePowerDataset() {
       return EnergyToAveragePower({
         data: this.currentDataset,
-        domains: this.powerEnergyDomains,
+        domains: this.domains,
         range: this.range,
         interval: this.interval,
         exponent: this.chartEnergyUnitPrefix
@@ -608,11 +612,12 @@ export default {
               )
             : this.averagePowerDataset
 
-        const totalPower = dataset.reduce((a, b) => a + b._totalPower, 0)
+        const totalPower = dataset.reduce((a, b) => a + b._total, 0)
         average = totalPower / dataset.length
       }
       return this.convertValue(average)
     },
+
     hoverPowerEnergyDomain() {
       const domain = this.hoverDomain
       const type = this.isEnergyType ? 'energy' : 'power'
@@ -632,6 +637,7 @@ export default {
     },
     hoverValue() {
       let value = null
+
       if (this.hoverData) {
         value = this.hoverData[this.hoverPowerEnergyDomain]
       }

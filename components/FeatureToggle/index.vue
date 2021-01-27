@@ -34,15 +34,6 @@
       class="panel-block"
       @click.stop>
       <input
-        v-model="featureMetrics"
-        type="checkbox" >
-      Metrics view
-    </label>
-
-    <label
-      class="panel-block"
-      @click.stop>
-      <input
         v-model="featureAuEnergy"
         type="checkbox" >
       All Regions Energy view
@@ -77,15 +68,6 @@ export default {
       },
       set: function(newValue) {
         this.$store.commit('feature/v3Paths', newValue)
-      }
-    },
-
-    featureMetrics: {
-      get: function() {
-        return this.$store.getters['feature/metrics']
-      },
-      set: function(newValue) {
-        this.$store.commit('feature/metrics', newValue)
       }
     },
 

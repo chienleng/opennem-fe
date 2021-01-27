@@ -206,7 +206,15 @@ export default {
             .getTime()
           if (showIntervalRange) {
             const sixDayslater = newTime + 518400000
-            const sDate = d3TimeFormat('%-d')(newTime)
+
+            // check year
+            const startYear = new Date(time).getFullYear()
+            const endYear = new Date(sixDayslater).getFullYear()
+
+            const sDate =
+              startYear === endYear
+                ? d3TimeFormat('%-d')(newTime)
+                : d3TimeFormat(formatString)(newTime)
             const eDate = d3TimeFormat(formatString)(sixDayslater)
             display = `${sDate} – ${eDate}`
           } else {

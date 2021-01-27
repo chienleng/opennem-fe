@@ -45,13 +45,12 @@ export default {
   data() {
     return {
       dropdownActive: false,
-      views: VIEWS.filter(v => v.id !== 'experiments/metrics')
+      views: VIEWS
     }
   },
 
   computed: {
     ...mapGetters({
-      featureMetrics: 'feature/metrics',
       featureAuEnergy: 'feature/auEnergy'
     }),
     regionId() {
@@ -63,16 +62,6 @@ export default {
     viewLabel() {
       const view = this.views.find(d => d.id === this.currentView)
       return view ? view.label : ''
-    }
-  },
-
-  watch: {
-    featureMetrics() {
-      if (this.featureMetrics) {
-        this.views = VIEWS
-      } else {
-        this.views = VIEWS.filter(v => v.id !== 'experiments/metrics')
-      }
     }
   },
 

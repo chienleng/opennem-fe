@@ -7,9 +7,10 @@
 </template>
 
 <script>
-import { select } from 'd3-selection'
+import { select, mouse } from 'd3-selection'
 import { axisBottom } from 'd3-axis'
 import { scaleLinear, scaleOrdinal, scaleBand } from 'd3-scale'
+import { format as numFormat } from 'd3-format'
 
 function rampHorizontal(x, color, height) {
   const size = height
@@ -70,6 +71,10 @@ export default {
       type: Number,
       default: 50
     },
+    fontSize: {
+      type: Number,
+      default: 10
+    },
     unit: {
       type: String,
       default: ''
@@ -97,6 +102,10 @@ export default {
     zeroBlock: {
       type: Boolean,
       default: false
+    },
+    tooltipFormat: {
+      type: String,
+      default: '.0f'
     }
   },
 
@@ -157,6 +166,7 @@ export default {
     },
 
     drawRamp(svg, colour, x) {
+      const self = this
       const value = d => {
         return typeof this.multiplier === 'string'
           ? d
@@ -187,6 +197,26 @@ export default {
           `translate(0,${this.svgHeight - this.margin.bottom})`
         )
         .call(rampHorizontal(x, colour, this.svgHeight))
+        .on('mousemove touchmove', function() {
+          const m = mouse(this)
+          const xValue = x.invert(m[0])
+          const text = numFormat(self.tooltipFormat)(value(xValue))
+          const xTextPos = xValue < 0.5 ? m[0] + 10 : m[0] - 5
+
+          $tooltipText
+            .attr('x', xTextPos)
+            .style('text-anchor', xValue < 0.5 ? 'start' : 'end')
+            .text(text)
+
+          const textWidth = $tooltipText.node().getComputedTextLength()
+          const xRectPos = xValue < 0.5 ? m[0] + 5 : m[0] - textWidth - 10
+
+          $tooltipRect.attr('x', xRectPos).attr('width', textWidth + 10)
+          $tooltip.style('opacity', 1)
+        })
+        .on('mouseleave touchend', () => {
+          $tooltip.style('opacity', 0)
+        })
         .append('g')
         .attr('class', 'tick-group')
         .call(
@@ -195,15 +225,38 @@ export default {
             .tickFormat(d => label(d))
         )
       svg.select('path.domain').remove()
+
+      const $tooltip = svg
+        .append('g')
+        .attr('class', 'tooltip')
+        .attr(
+          'transform',
+          `translate(0,${this.svgHeight - this.margin.bottom})`
+        )
+      const $tooltipRect = $tooltip
+        .append('rect')
+        .attr('class', 'tooltip-rect')
+        .attr('x', 0)
+        .attr('y', 5)
+        .attr('rx', 3)
+        .attr('height', 14)
+        .style('fill', '#c74523')
+
+      const $tooltipText = $tooltip
+        .append('text')
+        .attr('class', 'tooltip-text')
+        .attr('x', 0)
+        .attr('y', 16)
     },
 
     drawSwatch(svg, colour) {
-      const width = this.svgWidth - this.margin.right - this.margin.left
+      const marginLeft = 1
+      const width = this.svgWidth - this.margin.right - marginLeft
       const height = this.svgHeight - this.margin.bottom - this.margin.top
       const length = this.colourDomain.length
       const x = scaleBand()
-        .range([this.margin.left, this.svgWidth - this.margin.right])
-        .domain([0, 1])
+        .range([marginLeft, this.svgWidth - this.margin.right])
+        .domain(this.colourDomain)
       const label = d => {
         return this.colourDomainLabel ? this.colourDomainLabel[d] : d
       }
@@ -228,8 +281,8 @@ export default {
         .append('text')
         .attr('x', d => x(d) + width / length / 2)
         .attr('y', height * 2)
-        .text(d => label(d))
-        .style('font-size', '10px')
+        .text((d, i) => label(i))
+        .style('font-size', `${this.fontSize}px`)
         .style('text-anchor', 'middle')
     }
   }
@@ -249,6 +302,11 @@ export default {
         text-anchor: end;
       }
     }
+  }
+
+  .tooltip-text {
+    font-size: 11px;
+    fill: #fff;
   }
 }
 </style>

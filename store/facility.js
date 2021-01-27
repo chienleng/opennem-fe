@@ -9,7 +9,7 @@ import {
   INTERVAL_30MIN,
   INTERVAL_DAY
 } from '@/constants/interval-filters.js'
-import { dataProcess, dataRollUp } from '@/modules/dataTransform/facility-power'
+import { dataProcess, dataRollUp } from '@/data/parse/facility-energy'
 
 let request = null
 

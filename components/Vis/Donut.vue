@@ -77,6 +77,10 @@ export default {
     convertValue: {
       type: Function,
       default: () => function() {}
+    },
+    highlightDomain: {
+      type: String,
+      default: null
     }
   },
 
@@ -91,7 +95,8 @@ export default {
       arc: null,
       colour: null,
       hoverOnSlice: false,
-      hoverOnSliceData: null
+      hoverOnSliceData: null,
+      $donut: null
     }
   },
 
@@ -189,6 +194,15 @@ export default {
   watch: {
     donutDataset() {
       this.update()
+    },
+    highlightDomain(domain) {
+      if (domain && domain !== '') {
+        this.$donut
+          .selectAll('path')
+          .attr('opacity', d => (d.data.name === domain ? 1 : 0.2))
+      } else {
+        this.$donut.selectAll('path').attr('opacity', 1)
+      }
     }
   },
 
@@ -219,6 +233,8 @@ export default {
     },
 
     setup() {
+      this.$donut = d3Select(`#${this.id} .slices`)
+
       this.pie = d3Pie()
         .padAngle(0.005)
         .sort(null)
@@ -230,11 +246,10 @@ export default {
     },
 
     update() {
-      const $donutGroup = d3Select(`#${this.id} .slices`)
       this.colour.range(this.domainColours).domain(this.domainIds)
 
       const arcs = this.pie(this.donutDataset)
-      $donutGroup
+      this.$donut
         .selectAll('path')
         .data(arcs)
         .join('path')

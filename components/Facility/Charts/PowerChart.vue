@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div 
+    <div
       :class="{
-      'is-hovered': hoverOn || focusOn }" 
+      'is-hovered': hoverOn || focusOn }"
       class="chart">
       <power-chart-options
         :chart-title="chartTitle"
@@ -62,7 +62,7 @@ import parseISO from 'date-fns/parseISO'
 import getTime from 'date-fns/getTime'
 import _cloneDeep from 'lodash.clonedeep'
 
-import EnergyToAveragePower from '@/modules/dataTransform/energy-to-average-power.js'
+import EnergyToAveragePower from '@/data/transform/energy-to-average-power.js'
 import DateDisplay from '@/services/DateDisplay.js'
 import * as OPTIONS from '@/constants/chart-options.js'
 import * as SI from '@/constants/si.js'
@@ -157,7 +157,8 @@ export default {
     return {
       hoverDomain: '',
       focusDomain: '',
-      filteredDataset: []
+      filteredDataset: [],
+      totalProp: '_total'
     }
   },
 
@@ -172,13 +173,6 @@ export default {
     }),
     isEnergyType() {
       return this.dataType === 'energy'
-    },
-    totalProp() {
-      return this.isEnergyType
-        ? this.isYAxisAveragePower
-          ? '_totalPower'
-          : '_total'
-        : '_total'
     },
     averageValue() {
       const filteredOutNulls = this.filteredDataset.filter(

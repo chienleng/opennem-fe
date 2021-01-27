@@ -21,8 +21,8 @@
       @mouse-leave="handleSummaryRowMouseLeave"
     />
 
-    <section 
-      v-if="showDonutBar" 
+    <section
+      v-if="showDonutBar"
       class="bar-donut-wrapper">
       <header>
         <div class="buttons has-addons">
@@ -50,6 +50,7 @@
         :hover-data="hoverData"
         :focus-on="focusOn"
         :focus-data="focusData"
+        :highlight-domain="highlightId"
       />
 
       <donut-vis
@@ -62,7 +63,9 @@
         :hover-data="hoverData"
         :focus-on="focusOn"
         :focus-data="focusData"
-        :convert-value="convertValue" />
+        :convert-value="convertValue"
+        :highlight-domain="highlightId"
+      />
     </section>
 
     <EnergyRecords
@@ -127,6 +130,8 @@ export default {
       focusOn: 'visInteract/isFocusing',
       focusDate: 'visInteract/focusDate',
       chartSummaryPie: 'visInteract/chartSummaryPie',
+      highlightDomain: 'visInteract/highlightDomain',
+
       range: 'range',
       interval: 'interval',
       fuelTechGroupName: 'fuelTechGroupName',
@@ -203,6 +208,14 @@ export default {
       }
       const time = this.focusDate.getTime()
       return this.filteredCurrentDataset.find(d => d.time === time)
+    },
+
+    highlightId() {
+      const domain = this.highlightDomain
+      const property =
+        this.fuelTechGroupName === 'Default' ? 'fuelTech' : 'group'
+      const find = this.domains.find(d => d[property] === domain)
+      return find ? find.id : ''
     }
   },
 

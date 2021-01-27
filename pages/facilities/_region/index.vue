@@ -86,7 +86,7 @@ import {
 } from '~/constants/facility-regions.js'
 
 import Http from '~/services/Http.js'
-import FacilityDataTransformService from '~/services/dataTransform/Facility.js'
+import FacilityDataParse from '@/data/parse/facility'
 import FacilityFilters from '~/components/Facility/Filters.vue'
 import FacilityList from '~/components/Facility/List.vue'
 import FacilityMap from '~/components/Facility/Map.vue'
@@ -283,20 +283,18 @@ export default {
 
     handleResponses(responses) {
       if (this.hostEnv === 'prod') {
-        FacilityDataTransformService.flatten(responses[0]).then(res => {
+        FacilityDataParse.flatten(responses[0]).then(res => {
           this.facilityData = res
           this.ready = true
           this.$store.dispatch('facility/dataset', res)
         })
       } else {
         if (responses.length > 0 && responses[0].features) {
-          FacilityDataTransformService.flattenV3(responses[0].features).then(
-            res => {
-              this.facilityData = res
-              this.ready = true
-              this.$store.dispatch('facility/dataset', res)
-            }
-          )
+          FacilityDataParse.flattenV3(responses[0].features).then(res => {
+            this.facilityData = res
+            this.ready = true
+            this.$store.dispatch('facility/dataset', res)
+          })
         } else {
           console.warn('There is an issue parsing the response.')
         }

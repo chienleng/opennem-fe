@@ -1,8 +1,8 @@
 <template>
   <section>
     <div
-      v-for="(domain, index) in xDomains"
-      :key="index"
+      v-for="domain in xDomains"
+      :key="domain.id"
       class="row">
       <span class="row-label">
         {{ domain.label }}
@@ -12,7 +12,8 @@
         <div
           :style="{
             'width': `${getWidth(domain.id)}px`,
-            'background-color': domain.colour
+            'background-color': domain.colour,
+            'opacity': getOpacity(domain.id)
           }"
           class="row-bar" />
 
@@ -20,7 +21,7 @@
           {{ getContribution(domain.id) | percentageFormatNumber }}
         </div>
       </div>
-      
+
     </div>
   </section>
 </template>
@@ -59,6 +60,10 @@ export default {
     focusOn: {
       type: Boolean,
       default: () => false
+    },
+    highlightDomain: {
+      type: String,
+      default: null
     }
   },
 
@@ -139,6 +144,16 @@ export default {
         return (find.value / this.total) * 100
       }
       return 0
+    },
+    getOpacity(domain) {
+      if (
+        this.highlightDomain === '' ||
+        !this.highlightDomain ||
+        this.highlightDomain === domain
+      ) {
+        return 1
+      }
+      return 0.2
     }
   }
 }

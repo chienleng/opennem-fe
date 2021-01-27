@@ -5,7 +5,6 @@ import {
   FEATURE_TOGGLE_EMISSIONS,
   FEATURE_TOGGLE_REGION_COMPARE,
   FEATURE_TOGGLE_V3_PATHS,
-  FEATURE_TOGGLE_METRICS,
   FEATURE_TOGGLE_AU_ENERGY
 } from '@/constants/mutation-types/features.js'
 import hostEnv from '@/services/HostEnv.js'
@@ -23,7 +22,6 @@ export default {
       this.getSetFeature(FEATURE_TOGGLE_EMISSIONS, this.setEmissions)
       this.getSetFeature(FEATURE_TOGGLE_REGION_COMPARE, this.setRegionCompare)
       this.getSetFeature(FEATURE_TOGGLE_V3_PATHS, this.setV3Paths)
-      this.getSetFeature(FEATURE_TOGGLE_METRICS, this.setMetrics)
       this.getSetFeature(FEATURE_TOGGLE_AU_ENERGY, this.setAuEnergy)
 
       const exportAttribution = lsGet('exportAttribution') || '@name'
@@ -50,7 +48,6 @@ export default {
       setEmissions: 'feature/emissions',
       setRegionCompare: 'feature/regionCompare',
       setV3Paths: 'feature/v3Paths',
-      setMetrics: 'feature/metrics',
       setAuEnergy: 'feature/auEnergy',
 
       setExportAttribution: 'exportAttribution',
