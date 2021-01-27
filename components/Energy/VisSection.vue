@@ -21,7 +21,7 @@
     />
 
     <emissions-chart
-      v-if="ready && domainEmissions.length > 0 && featureEmissions" 
+      v-if="ready && domainEmissions.length > 0 && featureEmissions"
       :hover-on="isHovering"
       :hover-date="hoverDate"
       :zoom-extent="zoomExtent"
@@ -31,7 +31,7 @@
       @svgClick="handleSvgClick"
     />
 
-    <emission-intensity-chart 
+    <emission-intensity-chart
       v-if="ready && domainEmissions.length > 0 && featureEmissions"
       :hover-on="isHovering"
       :hover-date="hoverDate"
@@ -41,8 +41,8 @@
       @zoomExtent="handleZoomExtent"
       @svgClick="handleSvgClick" />
 
-    <price-market-value-chart 
-      v-if="ready && domainPrice.length > 0" 
+    <price-market-value-chart
+      v-if="ready && domainPrice.length > 0"
       :hover-on="isHovering"
       :hover-date="hoverDate"
       :zoom-extent="zoomExtent"
@@ -50,8 +50,8 @@
       @isHovering="handleIsHovering"
       @zoomExtent="handleZoomExtent"
       @svgClick="handleSvgClick" />
-    
-    <temperature-chart 
+
+    <temperature-chart
       v-if="ready && domainTemperature.length > 0"
       :hover-on="isHovering"
       :hover-date="hoverDate"
@@ -129,7 +129,6 @@ export default {
       focusOn: 'visInteract/isFocusing',
       focusDate: 'visInteract/focusDate',
       ready: 'regionEnergy/ready',
-      currentDataset: 'regionEnergy/currentDataset',
       domainEmissions: 'regionEnergy/domainEmissions',
       domainTemperature: 'regionEnergy/domainTemperature',
       domainPrice: 'regionEnergy/domainPrice',

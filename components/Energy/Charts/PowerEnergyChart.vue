@@ -222,6 +222,7 @@ export default {
       summary: 'regionEnergy/summary',
       filteredDates: 'regionEnergy/filteredDates'
     }),
+
     regionId() {
       return this.$route.params.region
     },

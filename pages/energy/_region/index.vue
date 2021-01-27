@@ -23,6 +23,7 @@
         </div>
       </div>
     </transition>
+
     <div
       v-if="ready"
       class="vis-table-container">
@@ -47,8 +48,10 @@ import { mapActions, mapGetters, mapMutations } from 'vuex'
 import { isPowerRange } from '@/constants/ranges.js'
 import {
   isValidRegion,
-  getEnergyRegionLabel
+  getEnergyRegionLabel,
+  getEnergyRegions
 } from '@/constants/energy-regions.js'
+import { getRegionsNetTotalDataset } from '@/data/pages/page-energy.js'
 import DataOptionsBar from '@/components/Energy/DataOptionsBar.vue'
 import VisSection from '@/components/Energy/VisSection.vue'
 import SummarySection from '@/components/Energy/SummarySection.vue'
@@ -102,6 +105,7 @@ export default {
 
   data() {
     return {
+      regions: getEnergyRegions(),
       isHovering: false,
       hoverDate: null,
       baseUrl: `${this.$config.url}/images/screens/`,
@@ -125,6 +129,16 @@ export default {
     }),
     regionId() {
       return this.$route.params.region
+    },
+    regionObj() {
+      return this.regions.find(r => r.id === this.regionId)
+    },
+    isGroupedRegion() {
+      return (
+        this.regionObj &&
+        this.regionObj.regions &&
+        this.regionObj.regions.length > 0
+      )
     },
     cardFilename() {
       return this.useDev
@@ -154,13 +168,7 @@ export default {
           interval: this.interval
         })
       } else {
-        this.doGetRegionDataByRangeInterval({
-          region: this.regionId,
-          range: curr,
-          interval: this.interval,
-          period: this.filterPeriod,
-          groupName: this.fuelTechGroupName
-        })
+        this.fetch()
       }
     },
     interval(interval) {
@@ -210,13 +218,9 @@ export default {
       if (this.regionId === 'wem' && !this.isEnergyType) {
         this.setInterval('30m')
       }
-      this.doGetRegionDataByRangeInterval({
-        region: this.regionId,
-        range: this.range,
-        interval: this.interval,
-        period: this.filterPeriod,
-        groupName: this.fuelTechGroupName
-      })
+
+      this.fetch()
+
       this.doUpdateTickFormats({ range: this.range, interval: this.interval })
     } else {
       this.$router.push({
@@ -228,6 +232,7 @@ export default {
 
   methods: {
     ...mapActions({
+      doGetRegionsData: 'regionEnergy/doGetRegionsData',
       doGetRegionDataByRangeInterval:
         'regionEnergy/doGetRegionDataByRangeInterval',
       doUpdateDatasetByInterval: 'regionEnergy/doUpdateDatasetByInterval',
@@ -246,6 +251,33 @@ export default {
       setInterval: 'interval',
       setQuery: 'app/query'
     }),
+
+    async fetch() {
+      if (this.isGroupedRegion) {
+        console.log('grouped!', this.regionObj.regions)
+        const datasets = await this.doGetRegionsData({
+          regions: this.regionObj.regions,
+          range: this.range,
+          interval: this.interval,
+          period: this.filterPeriod,
+          groupName: this.fuelTechGroupName
+        })
+
+        console.log(datasets)
+
+        const { dataset, domains } = getRegionsNetTotalDataset({ datasets })
+
+        console.log(domains, dataset)
+      }
+
+      this.doGetRegionDataByRangeInterval({
+        region: this.regionId,
+        range: this.range,
+        interval: this.interval,
+        period: this.filterPeriod,
+        groupName: this.fuelTechGroupName
+      })
+    },
     handleDateHover(date) {
       this.hoverDate = date
     },
