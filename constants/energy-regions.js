@@ -15,14 +15,23 @@ const EnergyRegions = [
     abbr: 'All',
     label: 'All Regions',
     colour: '#e34a33',
-    timezoneString: 'AEST'
+    timezoneString: 'AEST',
+    regions: [
+      ENERGY_NSW,
+      ENERGY_QLD,
+      ENERGY_SA,
+      ENERGY_TAS,
+      ENERGY_VIC,
+      ENERGY_WEM
+    ]
   },
   {
     id: ENERGY_NEM,
     abbr: 'NEM',
     label: 'NEM',
     colour: '#e34a33',
-    timezoneString: 'AEST'
+    timezoneString: 'AEST',
+    regions: [ENERGY_NSW, ENERGY_QLD, ENERGY_SA, ENERGY_TAS, ENERGY_VIC]
   },
   {
     id: ENERGY_NSW,
