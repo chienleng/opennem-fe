@@ -176,6 +176,61 @@ export const mutations = {
 }
 
 export const actions = {
+  doGetRegionsData(
+    { commit, dispatch, rootGetters },
+    { regions, range, interval, period, groupName }
+  ) {
+    console.log(regions, range, interval, period, groupName)
+    let promises = []
+    function process(region, responses) {
+      const dataCount = getDataCount(responses)
+      const {
+        datasetFull,
+        datasetFlat,
+        currentDataset,
+        dataPowerEnergyInterval,
+        domainPowerEnergy,
+        domainPowerEnergyGrouped,
+        domainEmissions,
+        domainEmissionsGrouped,
+        domainMarketValue,
+        domainMarketValueGrouped,
+        domainPrice,
+        domainTemperature,
+        dataType,
+        units
+      } = dataProcess(responses, range, interval, period)
+
+      return {
+        region,
+        dataset: currentDataset
+      }
+    }
+
+    regions.forEach(region => {
+      if (isValidRegion(region) && range !== '' && interval !== '') {
+        const useV3Paths = rootGetters['feature/v3Paths']
+        const urls = Data.getEnergyUrls(region, range, useV3Paths)
+
+        promises.push(
+          http(urls).then(res => {
+            const check = res.length > 0 ? (res[0].data ? true : false) : false
+            let responses = check
+              ? res.map(d => {
+                  return d.data
+                })
+              : res
+            return process(region, responses)
+          })
+        )
+      }
+    })
+
+    return Promise.all(promises).then(responses => {
+      return responses
+    })
+  },
+
   doGetAllData({ commit, dispatch, rootGetters }, { regions }) {
     dispatch('app/doClearError', null, { root: true })
 
@@ -369,6 +424,7 @@ export const actions = {
         )
 
         commit('isFetching', false)
+
         commit('isEnergyType', dataType === 'energy')
 
         commit('datasetFull', datasetFull)
@@ -460,7 +516,7 @@ export const actions = {
           )
         })
     } else {
-      console.log('not processing data')
+      console.log('not processing data', region, range, interval)
     }
   },
 
