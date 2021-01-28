@@ -85,7 +85,10 @@ const EnergyRegions = [
 ]
 
 export function getEnergyRegions() {
-  return _cloneDeep(EnergyRegions)
+  return _cloneDeep(EnergyRegions).map(d => {
+    d.domain = d.id
+    return d
+  })
 }
 
 export function getEnergyRegionLabel(id) {

@@ -51,7 +51,6 @@ import {
   getEnergyRegionLabel,
   getEnergyRegions
 } from '@/constants/energy-regions.js'
-import { getRegionsNetTotalDataset } from '@/data/pages/page-energy.js'
 import DataOptionsBar from '@/components/Energy/DataOptionsBar.vue'
 import VisSection from '@/components/Energy/VisSection.vue'
 import SummarySection from '@/components/Energy/SummarySection.vue'
@@ -252,22 +251,15 @@ export default {
       setQuery: 'app/query'
     }),
 
-    async fetch() {
+    fetch() {
       if (this.isGroupedRegion) {
-        console.log('grouped!', this.regionObj.regions)
-        const datasets = await this.doGetRegionsData({
+        this.doGetRegionsData({
           regions: this.regionObj.regions,
           range: this.range,
           interval: this.interval,
           period: this.filterPeriod,
           groupName: this.fuelTechGroupName
         })
-
-        console.log(datasets)
-
-        const { dataset, domains } = getRegionsNetTotalDataset({ datasets })
-
-        console.log(domains, dataset)
       }
 
       this.doGetRegionDataByRangeInterval({

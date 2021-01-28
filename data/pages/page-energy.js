@@ -1,13 +1,19 @@
 import _includes from 'lodash.includes'
 import { getEnergyRegions } from '@/constants/energy-regions.js'
 
-export function getRegionsNetTotalDataset({ datasets }) {
-  let domains = [],
-    dataset = []
-
+export function getRegionDomains(datasets) {
   if (datasets && datasets.length > 0) {
     const regions = datasets.map(d => d.region)
-    domains = getEnergyRegions().filter(d => _includes(regions, d.id))
+    return getEnergyRegions().filter(d => _includes(regions, d.id))
+  }
+
+  return null
+}
+
+export function getRegionsNetTotalDataset(domains, datasets) {
+  let dataset = []
+
+  if (datasets && datasets.length > 0) {
     dataset = datasets[0].dataset.map(d => {
       return {
         date: d.date,
@@ -20,10 +26,24 @@ export function getRegionsNetTotalDataset({ datasets }) {
         d[regionData.region] = regionData.dataset[i]._total
       })
     })
+
+    dataset.forEach(d => {
+      let lowest = 0,
+        highest = 0
+
+      domains.forEach(domain => {
+        if (d[domain.id] > highest) {
+          highest = d[domain.id]
+        }
+        if (d[domain.id] < lowest) {
+          lowest = d[domain.id]
+        }
+      })
+
+      d._highest = highest
+      d._lowest = lowest
+    })
   }
 
-  return {
-    dataset,
-    domains
-  }
+  return dataset
 }

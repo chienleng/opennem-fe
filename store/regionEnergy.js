@@ -9,6 +9,10 @@ import {
   dataRollUp,
   dataFilterByPeriod
 } from '@/data/parse/region-energy'
+import {
+  getRegionDomains,
+  getRegionsNetTotalDataset
+} from '@/data/pages/page-energy.js'
 import { isValidRegion } from '@/constants/energy-regions.js'
 
 let currentRegion = ''
@@ -38,6 +42,8 @@ export const state = () => ({
   datasetFull: [],
   datasetFlat: [],
   currentDataset: [],
+  datasetRegions: [],
+  domainRegions: [],
   domainPowerEnergy: [],
   domainPowerEnergyGrouped: [],
   domainEmissions: [],
@@ -62,6 +68,8 @@ export const getters = {
   isEnergyType: state => state.isEnergyType,
   datasetFlat: state => state.datasetFlat,
   currentDataset: state => state.currentDataset,
+  datasetRegions: state => state.datasetRegions,
+  domainRegions: state => state.domainRegions,
   domainPowerEnergy: state => state.domainPowerEnergy,
   domainPowerEnergyGrouped: state => state.domainPowerEnergyGrouped,
   domainEmissions: state => state.domainEmissions,
@@ -120,6 +128,12 @@ export const mutations = {
   },
   currentDataset(state, currentDataset) {
     state.currentDataset = _cloneDeep(currentDataset)
+  },
+  datasetRegions(state, datasetRegions) {
+    state.datasetRegions = _cloneDeep(datasetRegions)
+  },
+  domainRegions(state, domainRegions) {
+    state.domainRegions = _cloneDeep(domainRegions)
   },
   domainPowerEnergy(state, domainPowerEnergy) {
     state.domainPowerEnergy = _cloneDeep(domainPowerEnergy)
@@ -180,7 +194,6 @@ export const actions = {
     { commit, dispatch, rootGetters },
     { regions, range, interval, period, groupName }
   ) {
-    console.log(regions, range, interval, period, groupName)
     let promises = []
     function process(region, responses) {
       const dataCount = getDataCount(responses)
@@ -227,7 +240,16 @@ export const actions = {
     })
 
     return Promise.all(promises).then(responses => {
-      return responses
+      const domains = getRegionDomains(responses)
+      const dataset = getRegionsNetTotalDataset(domains, responses)
+
+      commit('datasetRegions', dataset)
+      commit('domainRegions', domains)
+
+      return {
+        domains,
+        dataset
+      }
     })
   },
 
