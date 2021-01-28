@@ -1,5 +1,7 @@
 <template>
   <section>
+    <RegionsSummaryTable />
+
     <summary-table
       :energy-domains="powerEnergyDomains"
       :temperature-domains="domainTemperature"
@@ -90,6 +92,8 @@ import _cloneDeep from 'lodash.clonedeep'
 import _includes from 'lodash.includes'
 
 import SummaryTable from '@/components/SummaryTable'
+import RegionsSummaryTable from '@/components/SummaryTable/Regions'
+
 import EnergyRecords from '~/components/Energy/Records'
 import DonutVis from '~/components/Vis/Donut.vue'
 import EnergyBar from '~/components/Energy/Charts/EnergyBarChart.vue'
@@ -99,6 +103,7 @@ import * as SI from '@/constants/si.js'
 
 export default {
   components: {
+    RegionsSummaryTable,
     SummaryTable,
     EnergyRecords,
     EnergyBar,

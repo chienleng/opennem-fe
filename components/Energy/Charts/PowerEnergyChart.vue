@@ -5,6 +5,7 @@
       'has-border-bottom': !chartShown
     }"
     class="chart">
+
     <power-energy-chart-options
       :read-only="readOnly"
       :chart-shown="chartShown"
@@ -23,7 +24,7 @@
       :is-renewable-line-only="isRenewableLineOnly"
       :average-energy="averageEnergy"
       :hover-display-date="hoverDisplayDate"
-      :hover-value="domains.length > 1 || (isTypeProportion || (isTypeLine && isYAxisPercentage)) ? hoverValue : null"
+      :hover-value="(domains && domains.length > 1) || (isTypeProportion || (isTypeLine && isYAxisPercentage)) ? hoverValue : null"
       :hover-domain-colour="hoverDomainColour"
       :hover-domain-label="hoverDomainLabel"
       :hover-renewables="hoverRenewables"
@@ -177,6 +178,12 @@ export default {
     }
   },
 
+  data() {
+    return {
+      useRegionDataset: true
+    }
+  },
+
   computed: {
     ...mapGetters({
       tabletBreak: 'app/tabletBreak',
@@ -220,7 +227,9 @@ export default {
       currentDataset: 'regionEnergy/currentDataset',
       currentDomainPowerEnergy: 'regionEnergy/currentDomainPowerEnergy',
       summary: 'regionEnergy/summary',
-      filteredDates: 'regionEnergy/filteredDates'
+      filteredDates: 'regionEnergy/filteredDates',
+      domainRegions: 'regionEnergy/domainRegions',
+      datasetRegions: 'regionEnergy/datasetRegions'
     }),
 
     regionId() {
@@ -236,10 +245,12 @@ export default {
     secondTickFormat() {
       return AxisTimeFormats[this.visSecondTickFormat]
     },
-
     chartHeight() {
       let height = 330
-      if (this.regionId === 'nem' && !this.tabletBreak) {
+      if (
+        (this.regionId === 'nem' || this.regionId === 'au') &&
+        !this.tabletBreak
+      ) {
         height = 520
       }
       return height
@@ -251,6 +262,7 @@ export default {
     chartCurve() {
       return this.isEnergyType ? this.chartEnergyCurve : this.chartPowerCurve
     },
+
     chartUnit() {
       return this.isEnergyType
         ? this.isYAxisAveragePower
@@ -308,6 +320,9 @@ export default {
     },
 
     domains() {
+      if (this.useRegionDataset) {
+        return this.domainRegions
+      }
       const domains = this.isTypeArea
         ? this.powerEnergyDomains
         : this.energyPercentDomains
@@ -514,19 +529,26 @@ export default {
       return this.averagePowerDataset
     },
     stackedAreaDataset() {
-      if (this.isTypeArea) {
-        if (this.isYAxisAbsolute) {
-          return this.currentDataset
-        }
-        // else return average power
-        return this.averagePowerDataset
+      if (this.useRegionDataset) {
+        return this.datasetRegions
       } else {
-        // return proportions dataset
-        return this.energyPercentDataset
+        if (this.isTypeArea) {
+          if (this.isYAxisAbsolute) {
+            return this.currentDataset
+          }
+          // else return average power
+          return this.averagePowerDataset
+        } else {
+          // return proportions dataset
+          return this.energyPercentDataset
+        }
       }
     },
     dataset() {
       let ds = null
+      if (this.useRegionDataset) {
+        return this.datasetRegions
+      }
       if (this.isTypeLine) {
         ds = this.multiLineDataset
       } else {

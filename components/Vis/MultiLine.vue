@@ -1,6 +1,6 @@
 <template>
   <div class="vis multi-line-vis">
-    <svg 
+    <svg
       :width="svgWidth"
       :height="svgHeight"
       :id="id">
@@ -16,39 +16,39 @@
           <feDropShadow
             dx="0"
             dy="1"
-            stdDeviation="1" 
+            stdDeviation="1"
             flood-color="rgba(0, 0, 0, 0.2)" />
         </filter>
       </defs>
-      
-      <g 
-        :transform="axisTransform" 
+
+      <g
+        :transform="axisTransform"
         class="x-axis" />
-      <g 
-        :transform="axisTransform" 
+      <g
+        :transform="axisTransform"
         class="y-axis" />
-      <g 
-        :transform="axisTransform" 
+      <g
+        :transform="axisTransform"
         class="x-shades" />
-      <g 
-        :transform="axisTransform" 
+      <g
+        :transform="axisTransform"
         class="cursor-line-group" />
-      <g 
-        :transform="axisTransform" 
+      <g
+        :transform="axisTransform"
         class="hover-group" />
-      <g 
+      <g
         :transform="axisTransform"
         class="vis1-group" />
-      <g 
+      <g
         :transform="axisTransform"
         class="vis2-group" />
-      <g 
-        :transform="axisTransform" 
+      <g
+        :transform="axisTransform"
         class="y-axis-left-text" />
-      <g 
-        :transform="axisTransform" 
+      <g
+        :transform="axisTransform"
         class="y-axis-right-text" />
-      
+
     </svg>
   </div>
 </template>
@@ -267,7 +267,7 @@ export default {
       }
     },
     keys1() {
-      return this.domains1.map(d => d.domain)
+      return this.domains1 ? this.domains1.map(d => d.domain) : []
     },
     colours1() {
       const dict = {}

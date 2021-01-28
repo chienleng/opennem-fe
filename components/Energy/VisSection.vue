@@ -13,7 +13,7 @@
       @displayUnit="unit => selectedUnit = unit"
     />
 
-    <energy-compare
+    <!-- <energy-compare
       v-if="compareDifference"
       :domains="domains"
       :unit="selectedUnit"
@@ -59,7 +59,7 @@
       @dateHover="handleDateHover"
       @isHovering="handleIsHovering"
       @zoomExtent="handleZoomExtent"
-      @svgClick="handleSvgClick" />
+      @svgClick="handleSvgClick" /> -->
 
   </section>
 </template>
