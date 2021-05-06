@@ -338,7 +338,10 @@ export const actions = {
     const cData = []
     cData.push(
       customData.data.filter(
-        d => d.fuel_tech !== 'solar_rooftop' && d.fuel_tech !== 'imports'
+        d =>
+          d.fuel_tech !== 'solar_rooftop' &&
+          d.fuel_tech !== 'imports' &&
+          d.fuel_tech !== 'battery_discharging'
       )
     )
 
