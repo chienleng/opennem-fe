@@ -41,7 +41,7 @@
               Power <small>{{ chartCurrentUnit }}</small>
             </span>
             <span v-else>
-              Energy <small>GWh</small>
+              Energy <small>kWh</small>
             </span>
           </div>
 
