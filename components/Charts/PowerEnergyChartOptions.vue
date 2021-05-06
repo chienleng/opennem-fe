@@ -81,7 +81,7 @@ import ChartOptions from '@/components/Vis/ChartOptions'
 import * as OPTIONS from '@/constants/chart-options.js'
 import * as SI from '@/constants/si'
 
-const powerSi = [SI.MEGA, SI.GIGA]
+const powerSi = [SI.BASE, SI.KILO]
 const energySi = [SI.MEGA, SI.GIGA, SI.TERA]
 
 export default {

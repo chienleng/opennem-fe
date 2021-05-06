@@ -14,8 +14,8 @@ export const state = () => ({
   chartPowerYAxis: OPTIONS.CHART_YAXIS_ABSOLUTE,
   chartPowerCurve: OPTIONS.CHART_CURVE_SMOOTH,
   chartPowerUnit: 'W',
-  chartPowerUnitPrefix: SI.MEGA,
-  chartPowerDisplayPrefix: SI.MEGA,
+  chartPowerUnitPrefix: SI.BASE,
+  chartPowerDisplayPrefix: SI.BASE,
 
   chartEnergyRenewablesLine: false
 })

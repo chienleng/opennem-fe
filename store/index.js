@@ -175,7 +175,7 @@ export const getters = {
       case '1D':
       case '3D':
       case '7D':
-        return ' MW'
+        return ' W'
       default:
         return ' GWh'
     }
