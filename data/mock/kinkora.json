@@ -12,7 +12,7 @@
             "network": "kinkora",
             "data_type": "power",
             "code": "imports",
-            "units": "MW",
+            "units": "W",
             "history": {
                 "start": "2021-03-02T00:00:00+11:00",
                 "last": "2021-03-31T23:00:00+11:00",
@@ -8657,7 +8657,7 @@
             "network": "kinkora",
             "data_type": "power",
             "code": "solar_rooftop",
-            "units": "MW",
+            "units": "W",
             "history": {
                 "start": "2021-03-02T00:00:00+11:00",
                 "last": "2021-03-31T23:00:00+11:00",
@@ -17302,7 +17302,7 @@
             "network": "kinkora",
             "data_type": "power",
             "code": "solar_rooftop",
-            "units": "MW",
+            "units": "W",
             "history": {
                 "start": "2021-03-02T00:00:00+11:00",
                 "last": "2021-03-31T23:00:00+11:00",
@@ -25947,7 +25947,7 @@
             "network": "kinkora",
             "data_type": "power",
             "code": "exports",
-            "units": "MW",
+            "units": "W",
             "history": {
                 "start": "2021-03-02T00:00:00+11:00",
                 "last": "2021-03-31T23:00:00+11:00",
@@ -34592,7 +34592,7 @@
             "network": "kinkora",
             "data_type": "power",
             "code": "hot_water",
-            "units": "MW",
+            "units": "W",
             "history": {
                 "start": "2021-03-02T00:00:00+11:00",
                 "last": "2021-03-31T23:00:00+11:00",
@@ -43237,7 +43237,7 @@
             "network": "kinkora",
             "data_type": "power",
             "code": "pool",
-            "units": "MW",
+            "units": "W",
             "history": {
                 "start": "2021-03-02T00:00:00+11:00",
                 "last": "2021-03-31T23:00:00+11:00",
@@ -51882,7 +51882,7 @@
             "network": "kinkora",
             "data_type": "power",
             "code": "hvac",
-            "units": "MW",
+            "units": "W",
             "history": {
                 "start": "2021-03-02T00:00:00+11:00",
                 "last": "2021-03-31T23:00:00+11:00",
@@ -60527,7 +60527,7 @@
             "network": "kinkora",
             "data_type": "power",
             "code": "ev_charging",
-            "units": "MW",
+            "units": "W",
             "history": {
                 "start": "2021-03-02T00:00:00+11:00",
                 "last": "2021-03-31T23:00:00+11:00",
@@ -69172,7 +69172,7 @@
             "network": "kinkora",
             "data_type": "power",
             "code": "battery_discharging",
-            "units": "MW",
+            "units": "W",
             "history": {
                 "start": "2021-03-02T00:00:00+11:00",
                 "last": "2021-03-31T23:00:00+11:00",
@@ -77817,7 +77817,7 @@
             "network": "kinkora",
             "data_type": "power",
             "code": "battery_charging",
-            "units": "MW",
+            "units": "W",
             "history": {
                 "start": "2021-03-02T00:00:00+11:00",
                 "last": "2021-03-31T23:00:00+11:00",
