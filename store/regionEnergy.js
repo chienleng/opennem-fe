@@ -1,6 +1,5 @@
 import _cloneDeep from 'lodash.clonedeep'
 import PerfTime from '@/plugins/perfTime.js'
-import { lsGet, lsSet } from '@/services/LocalStorage'
 import http from '@/services/Http.js'
 import Data from '@/services/Data.js'
 import {
@@ -10,6 +9,8 @@ import {
   dataFilterByPeriod
 } from '@/data/parse/region-energy'
 import { isValidRegion } from '@/constants/energy-regions.js'
+
+import customData from '@/data/mock/kinkora.json'
 
 let currentRegion = ''
 
@@ -332,9 +333,16 @@ export const actions = {
     { region, range, interval, period, groupName, useV3 }
   ) {
     dispatch('app/doClearError', null, { root: true })
+    const displayTz = rootGetters.displayTimeZone
+
+    const cData = []
+    cData.push(
+      customData.data.filter(
+        d => d.fuel_tech !== 'solar_rooftop' && d.fuel_tech !== 'imports'
+      )
+    )
 
     if (isValidRegion(region) && range !== '' && interval !== '') {
-      const displayTz = rootGetters.displayTimeZone
       const urls = Data.getEnergyUrls(region, range, useV3)
       currentRegion = region
       commit('ready', false)
@@ -432,46 +440,48 @@ export const actions = {
         }
       }
 
-      return http(urls)
-        .then(res => {
-          const check = res.length > 0 ? (res[0].data ? true : false) : false
-          let responses = check
-            ? res.map(d => {
-                return d.data
-              })
-            : res
+      processResponses(cData)
 
-          const version = res[0].version
-          commit('app/apiVersion', version && version !== '' ? version : null, {
-            root: true
-          })
+      // return http(urls)
+      //   .then(res => {
+      //     const check = res.length > 0 ? (res[0].data ? true : false) : false
+      //     let responses = check
+      //       ? res.map(d => {
+      //           return d.data
+      //         })
+      //       : res
 
-          return processResponses(responses)
-        })
-        .catch(e => {
-          console.error('error', e)
-          let header = 'Error'
-          let message = ''
+      //     const version = res[0].version
+      //     commit('app/apiVersion', version && version !== '' ? version : null, {
+      //       root: true
+      //     })
 
-          if (!e) {
-            message =
-              'There is an issue processing the responses. Please check the developer console and contact OpenNEM.'
-          } else {
-            const error = e.toJSON()
-            header = `${error.message}`
-            message = `Trying to fetch <code>${error.config.url}</code>`
+      //     return processResponses(responses)
+      //   })
+      //   .catch(e => {
+      //     console.error('error', e)
+      //     let header = 'Error'
+      //     let message = ''
 
-            console.log(error)
-          }
-          dispatch(
-            'app/doUpdateError',
-            {
-              header,
-              message
-            },
-            { root: true }
-          )
-        })
+      //     if (!e) {
+      //       message =
+      //         'There is an issue processing the responses. Please check the developer console and contact OpenNEM.'
+      //     } else {
+      //       const error = e.toJSON()
+      //       header = `${error.message}`
+      //       message = `Trying to fetch <code>${error.config.url}</code>`
+
+      //       console.log(error)
+      //     }
+      //     dispatch(
+      //       'app/doUpdateError',
+      //       {
+      //         header,
+      //         message
+      //       },
+      //       { root: true }
+      //     )
+      //   })
     } else {
       console.log('not processing data')
     }
