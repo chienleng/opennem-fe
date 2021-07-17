@@ -76,6 +76,10 @@ export default {
       type: Array,
       default: () => []
     },
+    transmissions: {
+      type: Object,
+      default: () => null
+    },
     hovered: {
       type: Object,
       default: () => null
@@ -146,6 +150,10 @@ export default {
         this.removePopup(this.selectedPopup)
         this.fitBounds()
       }
+    },
+    transmissions(collection) {
+      console.log('ccc', collection)
+      this.addTransmissionLayer(collection)
     }
   },
 
@@ -186,6 +194,7 @@ export default {
       this.map.addControl(this.scale)
 
       this.addMapSourceAndLayer(true)
+      this.addTransmissionLayer(this.transmissions)
 
       this.map.on('mouseenter', 'facilitiesLayer', e => {
         this.map.getCanvas().style.cursor = 'pointer'
@@ -266,6 +275,28 @@ export default {
         this.setMapBounds(features)
         this.map.getSource('facilities').setData(this.source.data)
         this.fitBounds()
+      }
+    },
+
+    addTransmissionLayer(collection) {
+      if (this.map) {
+        console.log('eee', collection)
+
+        this.map.addSource('transmissions-lines', {
+          type: 'geojson',
+          data: collection
+        })
+
+        this.map.addLayer({
+          id: 'polygon-line',
+          type: 'line',
+          source: 'transmissions-lines',
+          layout: {},
+          paint: {
+            'line-color': '#e34a33',
+            'line-width': 1
+          }
+        })
       }
     },
 

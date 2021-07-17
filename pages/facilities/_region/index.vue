@@ -52,6 +52,7 @@
       <FacilityMap
         v-if="!tabletBreak || (tabletBreak && selectedView === 'map')"
         :data="filteredFacilities"
+        :transmissions="transmissionLines"
         :hovered="hoveredFacility"
         :selected="selectedFacility"
         class="facility-map"
@@ -88,6 +89,7 @@ import {
 } from '~/constants/facility-regions.js'
 
 import Http from '~/services/Http.js'
+import Http2 from '~/services/Http2.js'
 import FacilityDataParse from '@/data/parse/facility'
 import FacilityFilters from '~/components/Facility/Filters.vue'
 import FacilityList from '~/components/Facility/List.vue'
@@ -164,7 +166,8 @@ export default {
       totalFacilities: 0,
       shouldZoomWhenSelected: false,
       baseUrl: `${this.$config.url}/images/screens/`,
-      useDev: this.$config.useDev
+      useDev: this.$config.useDev,
+      transmissionLines: null
     }
   },
 
@@ -284,6 +287,20 @@ export default {
       } else {
         console.warn('fetchData', 'No urls provided')
       }
+
+      this.fetchTransmissions()
+    },
+
+    fetchTransmissions() {
+      const urls = ['/data/transmission.json']
+      Http2(urls)
+        .then(responses => {
+          console.log(responses[0].objects.collection)
+          this.transmissionLines = responses[0].objects.collection
+        })
+        .catch(e => {
+          console.error(e)
+        })
     },
 
     handleResponses(responses) {
