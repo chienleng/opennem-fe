@@ -1,6 +1,6 @@
 {
   "name": "opennem",
-  "version": "4.2.0",
+  "version": "4.2.1",
   "description": "An Open Platform for National Electricity Market Data",
   "author": "Steven Tan",
   "private": true,
