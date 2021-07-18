@@ -534,12 +534,30 @@ export default {
         })
       })
 
+      console.log(summary)
+
       this.units.forEach(u => {
         const id = u.id
         const marketValueId = u.marketValueId
 
         // calculate capacity factor - av power / registered capacity
         // - average power is calculated using non null length
+        // (total energy) / (total capacity*no. intervals)
+        console.log(
+          summary[id].power,
+          summary[id].energy,
+          unitNonNullLength[id],
+          u.registeredCapacity,
+          ds.length,
+          this.interval
+        )
+        const cp1 =
+          (summary[id].energy / (u.registeredCapacity * 24 * ds.length)) * 100
+        const cp2 =
+          (summary[id].power / unitNonNullLength[id] / u.registeredCapacity) *
+          100
+        console.log(cp1, cp2)
+
         summary[id].capFactor = unitNonNullLength[id]
           ? (summary[id].power / unitNonNullLength[id] / u.registeredCapacity) *
             100
@@ -564,6 +582,10 @@ export default {
       summary.totalAvPower = hasData ? totalPower / ds.length : null
       summary.totalEnergy = hasData ? totalEnergy : null
       summary.avPower = hasData ? totalPower / ds.length : null
+
+      const tCp =
+        (summary.totalEnergy / (totalOperatingRegCap * 24 * ds.length)) * 100
+      console.log('total', tCp, totalOperatingRegCap)
       summary.capFactor = hasData
         ? summary.avPower === 0
           ? 0
